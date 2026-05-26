@@ -1,0 +1,9 @@
+nav:
+  - index.md
+  - 課題一覧: assignment.md
+  - 実習ルール: rules.md
+  - 要件定義: 00_rfp.md
+  - 概要仕様書: 01_overview_spec.md
+  - 画面仕様書: 02_screen_spec.md
+  - バッチ仕様書: 03_batch_spec.md
+  - テーブル定義書: 09_dbtable.md

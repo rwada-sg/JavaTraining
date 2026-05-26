@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html th:fragment="layout(title, content, usefunction)" lang="ja" xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security" data-theme="light">
+
+<head th:replace="~{fragments/header :: common_header(${title})}"> </head>
+
+<body>
+  <nav>
+    <!--/* 左寄せ */-->
+    <ul>
+      <li>
+        <a th:href="@{/}">
+          <img alt="logo" style="vertical-align: text-bottom;" src="/image/logo.svg" />
+          <strong>サービス管理システム</strong>
+        </a>
+      </li>
+      <li>
+        <a th:href="@{/}" th:aria-current="${usefunction == 'top'} ? 'page'">トップ</a>
+      </li>
+      <li>
+        <a th:href="@{/member/search}" th:aria-current="${usefunction == 'member'} ? 'page'">加入者情報管理</a>
+      </li>
+    </ul>
+    <!--/* 右寄せ */-->
+    <div>
+      <!-- TODO: ログアウト -->
+    </div>
+  </nav>
+
+  <main class="container">
+    <h1 th:text="${title}"><!--/* 機能名表示 */--></h1>
+    <div th:replace="${content}">
+      <!--/*
+        アプリケーション領域
+        このレイアウトの呼出元画面がここに上書きされます。
+      */-->
+    </div>
+  </main>
+</body>
+
+</html>

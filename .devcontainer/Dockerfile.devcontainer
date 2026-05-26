@@ -1,0 +1,5 @@
+FROM mcr.microsoft.com/devcontainers/java:25
+
+RUN apt-get update && \
+    apt-get -y install argon2 && \
+    rm -rf /var/lib/apt/lists/*

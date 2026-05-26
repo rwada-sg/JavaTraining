@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/app :: layout('加入者検索結果', ~{::content}, 'member')}" xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<div th:fragment="content">
+  <!--/*
+        加入者情報検索結果表示画面
+    */-->
+  <a role="button" class="secondary" th:href="@{/member/search}">戻る</a>
+  <table>
+    <thead>
+      <tr>
+        <th>加入者番号</th>
+        <th>メールアドレス</th>
+        <th>氏名</th>
+        <th>住所</th>
+        <th>加入日</th>
+        <th>解約日</th>
+        <th>支払方法</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:if="${!#lists.isEmpty(result)}" th:each="row : ${result}">
+        <td>
+          <a th:href="@{/member/edit/{id}(id=${row.memberId})}" th:text="${row.memberId}"></a>
+        </td>
+        <td th:text="${row.mail}"></td>
+        <td th:text="${row.name}"></td>
+        <td th:text="${row.address}"></td>
+        <td th:text="${#temporals.format(row.startDate, 'yyyy/MM/dd')}"></td>
+        <td th:text="${#temporals.format(row.endDate, 'yyyy/MM/dd')}"></td>
+        <td th:text="${row.paymentMethod.displayName}"></td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(result)}">
+        <td colspan="7" class="no-result">該当する情報が見つかりませんでした。</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</html>

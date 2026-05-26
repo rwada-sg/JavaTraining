@@ -1,0 +1,52 @@
+site_name: Java実習用システムドキュメント
+copyright: Copyright &copy; 2023-2026 システム技研株式会社
+theme:
+    name: material
+    language: ja
+    font:
+        text: Noto Sans JP
+        code: Consolas
+    features:
+        - toc.integrate
+        - navigation.expand
+        - navigation.footer
+        - navigation.instant
+        - navigation.sections
+        - content.code.copy
+        - search.hightlight
+plugins:
+    - awesome-nav
+    - search:
+          lang: ja
+    - enumerate-headings:
+          toc_depth: 1
+    - git-revision-date-localized:
+          enabled: true
+          enable_creation_date: true
+          fallback_to_build_date: true
+          enable_git_follow: false
+    - table-reader
+    - include-markdown:
+          encoding: utf-8
+          preserve_includer_indent: false
+          dedent: true
+          trailing_newlines: true
+          comments: true
+          rewrite_relative_urls: true
+    - print-site
+markdown_extensions:
+    - meta
+    - toc:
+          toc_depth: 1-2
+    - def_list
+    - admonition
+    - pymdownx.keys
+    - pymdownx.details:
+    - pymdownx.highlight:
+          anchor_linenums: true
+          pygments_lang_class: true
+    - pymdownx.superfences:
+          custom_fences:
+              - name: mermaid
+                class: mermaid
+                format: !!python/name:pymdownx.superfences.fence_code_format

@@ -1,0 +1,32 @@
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile.devcontainer
+    volumes:
+      - type: bind
+        source: ../..
+        target: /workspaces/
+    command: sleep infinity
+    networks:
+      - default
+
+  database:
+    image: postgres:18
+    volumes:
+      - type: volume
+        source: postgres-vol
+        target: /var/lib/postgresql
+      - type: bind
+        source: ./initsql
+        target: /docker-entrypoint-initdb.d
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - default
+
+volumes:
+  postgres-vol:
