@@ -9,7 +9,8 @@
             "name": "WebApp",
             "request": "launch",
             "mainClass": "com.s_giken.training.webapp.WebappApplication",
-            "projectName": "webapp"
+            "projectName": "webapp",
+            "cwd": "${workspaceFolder}"
         },
         {
             "type": "java",
