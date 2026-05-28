@@ -22,12 +22,12 @@
       </li>
     </ul>
     <!--/* 右寄せ */-->
-    <!-- <div sec:authorize="isAuthenticated()"> -->
-    <!-- TODO: ログアウト -->
-    <!-- <form th:action="@{/logout}" method="POST"> -->
-
-    <!-- </form> -->
-    <!-- </div> -->
+    <div sec:authorize="isAuthenticated()">
+      <!-- TODO: ログアウト -->
+      <form th:action="@{/logout}" method="POST">
+        <button type="submit" class="button-group">ログアウト</button>
+      </form>
+    </div>
   </nav>
 
   <main class="container">
