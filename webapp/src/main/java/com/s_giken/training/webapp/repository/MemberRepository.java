@@ -55,19 +55,38 @@ public class MemberRepository implements IMemberRepository {
     }
 
     /**
-     * メールアドレスの一部にマッチするの加入者情報リストを取得する。
+     * メールアドレスの一部にマッチする加入者情報リストを取得する。
      *
      * @param mail 検索したいメールアドレスの一部
      * @return Optional型の Memberオブジェクト
      */
     @Override
     public List<Member> findByMailLike(String mail) {
-        if(mail == null) {
+        if (mail == null) {
             throw new IllegalStateException("mail is null");
         }
 
         String sql = "SELECT * FROM T_MEMBER WHERE mail like ?";
         Object[] args = { "%" + mail + "%" };
+        int[] argTypes = { Types.VARCHAR };
+        List<Member> result = jdbcTemplate.query(sql, args, argTypes, rowMapper);
+        return result;
+    }
+
+    /**
+     * 氏名の一部にマッチする加入者情報リストを取得する。
+     * 
+     * @param name 検索したい氏名の一部
+     * @return Memberオブジェクトの List
+     */
+    @Override
+    public List<Member> findByNameLike(String name) {
+        if (name == null) {
+            throw new IllegalStateException("name is null");
+        }
+
+        String sql = "SELECT * FROM t_member WHERE name LIKE ?";
+        Object[] args = { "%" + name + "%" };
         int[] argTypes = { Types.VARCHAR };
         List<Member> result = jdbcTemplate.query(sql, args, argTypes, rowMapper);
         return result;
@@ -88,37 +107,31 @@ public class MemberRepository implements IMemberRepository {
         }
 
         String sql = """
-                    INSERT INTO T_MEMBER (
-                        member_id,
-                        mail,
-                        name,
-                        address,
-                        start_date,
-                        end_date,
-                        payment_method,
-                        created_at,
-                        modified_at)
-                    VALUES (
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        CURRENT_TIMESTAMP,
-                        CURRENT_TIMESTAMP
-                    )
-                """;
-        int processed_count = jdbcTemplate.update(
-                sql,
-                memberId,
-                member.getMail(),
-                member.getName(),
-                member.getAddress(),
-                member.getStartDate(),
-                member.getEndDate(),
-                member.getPaymentMethod().getCode());
+                INSERT INTO T_MEMBER (
+                    member_id,
+                    mail,
+                    name,
+                    address,
+                    start_date,
+                    end_date,
+                    payment_method,
+                    created_at,
+                    modified_at)
+                VALUES (
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    CURRENT_TIMESTAMP,
+                    CURRENT_TIMESTAMP
+                )
+            """;
+        int processed_count = jdbcTemplate
+                .update(sql, memberId, member.getMail(), member.getName(), member.getAddress(), member.getStartDate(),
+                        member.getEndDate(), member.getPaymentMethod().getCode());
 
         return processed_count;
     }
@@ -132,25 +145,19 @@ public class MemberRepository implements IMemberRepository {
     @Override
     public int update(Member member) {
         String sql = """
-                    UPDATE T_MEMBER
-                    SET mail = ?,
-                        name = ?,
-                        address = ?,
-                        start_date = ?,
-                        end_date = ?,
-                        payment_method = ?,
-                        modified_at = CURRENT_TIMESTAMP
-                    WHERE member_id = ?
-                """;
-        int processed_count = jdbcTemplate.update(
-                sql,
-                member.getMail(),
-                member.getName(),
-                member.getAddress(),
-                member.getStartDate(),
-                member.getEndDate(),
-                member.getPaymentMethod().getCode(),
-                member.getMemberId());
+                UPDATE T_MEMBER
+                SET mail = ?,
+                    name = ?,
+                    address = ?,
+                    start_date = ?,
+                    end_date = ?,
+                    payment_method = ?,
+                    modified_at = CURRENT_TIMESTAMP
+                WHERE member_id = ?
+            """;
+        int processed_count = jdbcTemplate
+                .update(sql, member.getMail(), member.getName(), member.getAddress(), member.getStartDate(),
+                        member.getEndDate(), member.getPaymentMethod().getCode(), member.getMemberId());
 
         return processed_count;
     }

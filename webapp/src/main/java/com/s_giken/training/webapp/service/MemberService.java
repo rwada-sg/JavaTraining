@@ -1,6 +1,7 @@
 package com.s_giken.training.webapp.service;
 
 import java.util.List;
+import java.util.stream.Stream;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -56,7 +57,12 @@ public class MemberService implements IMemberService {
     @Override
     public List<Member> findByConditions(MemberSearchCondition memberSearchCondition) {
         // TODO: 氏名検索用メソッドを呼び出すように修正
-        return memberRepository.findByMailLike(memberSearchCondition.getMail());
+        List<Member> mailLikeList = memberRepository.findByMailLike(memberSearchCondition.getMail());
+        List<Member> nameLikeList = memberRepository.findByNameLike(memberSearchCondition.getName());
+
+        List<Member> result = Stream.concat(nameLikeList.stream(), mailLikeList.stream()).distinct().toList();
+
+        return result;
     }
 
     /**

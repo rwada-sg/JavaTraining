@@ -11,6 +11,9 @@
     </label>
     <!--/* 氏名 */-->
     <!--/* ここにテキストフォームを設置 */-->
+    <label for="name">氏名
+      <input tyep="text" th:field="*{name}">
+    </label>
     <div class="button-group">
       <button type="submit">検索</button>
       <a role="button" class="outline" th:href="@{/member/add}">登録</a>
