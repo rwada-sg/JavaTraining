@@ -51,7 +51,7 @@ public class ChargeController {
 
         var charge = chargeService.findById(id); // 戻り値：Optional<Charge>
         if (!charge.isPresent()) {
-            throw new NotFoundException(String.format("指定したid(%d)の料金名情報が存在しません。", id));
+            throw new NotFoundException(String.format("指定したid(%d)の料金情報が存在しません。", id));
         }
         model.addAttribute("isAddMode", false);
         model.addAttribute("charge", charge.get());
@@ -93,8 +93,6 @@ public class ChargeController {
     public String saveCharge(@Validated Charge charge, BindingResult result, RedirectAttributes redirectAttributes) {
 
         if (result.hasErrors()) {
-            System.out.println("a\na\na\na\na\na\na\na\na\na\na\na\na\na\na\n");
-            System.out.println(result);
             return "charge_edit";
         }
 

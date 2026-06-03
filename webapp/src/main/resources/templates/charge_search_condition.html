@@ -6,6 +6,9 @@
   <!--/*
         料金名情報検索画面
     */-->
+  <div th:if="!${#strings.isEmpty(message)}" class="alert alert-success">
+    <span th:text="${message}"></span>
+  </div>
   <form th:action="@{/charge/search}" method="POST" th:object="${chargeSearchCondition}">
     <label for="name">料金名
       <input type="text" th:field="*{chargeName}">
