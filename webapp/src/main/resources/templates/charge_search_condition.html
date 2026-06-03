@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/app :: layout('料金名検索', ~{::content}, 'charge')}" xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<div th:fragment="content">
+  <!--/*
+        料金名情報検索画面
+    */-->
+  <form th:action="@{/charge/search}" method="POST" th:object="${chargeSearchCondition}">
+    <label for="name">料金名
+      <input type="text" th:field="*{chargeName}">
+    </label>
+    <div class="button-group">
+      <button type="submit">検索</button>
+      <a role="button" th:href="@{/charge/add}" class="outline">登録</a>
+    </div>
+  </form>
+</div>
+
+</html>

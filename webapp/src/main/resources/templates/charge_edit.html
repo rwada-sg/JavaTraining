@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/app :: layout(${isAddMode}?'料金情報登録':'料金情報編集', ~{::content}, 'charge')}"
+  xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<div th:fragment="content">
+  <!--/* 料金情報編集画面 */-->
+  <div th:if="!${#strings.isEmpty(message)}" class="alert alert-success">
+    <span th:text="${message}"></span>
+  </div>
+  <form th:action="${isAddMode}?@{/charge/add}:@{/charge/update}" th:object="${charge}" method="POST">
+    <input type="hidden" th:field="*{id}">
+    <label for="chargeName">料金名
+      <input type="text" th:field="*{chargeName}" maxlength="127">
+      <span class="error-message" th:if="${#fields.hasErrors('chargeName')}" th:errors="*{chargeName}"></span>
+    </label>
+    <label for="monthlyCharge">月額料金
+      <input type="text" th:field="*{monthlyCharge}" maxlength="9">
+      <span class="error-message" th:if="${#fields.hasErrors('monthlyCharge')}" th:errors="*{monthlyCharge}"></span>
+    </label>
+    <label for="startDate">加入日
+      <input type="date" th:field="*{startDate}" maxlength="10">
+      <span class="error-message" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></span>
+    </label>
+    <label for="endDate">解約日
+      <input type="date" th:field="*{endDate}" maxlength="10">
+      <span class="error-message" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></span>
+    </label>
+    <div class="button-group-spread">
+      <div class="button-group">
+        <button type="submit">保存</button>
+        <a role="button" class="secondary" th:href="@{/charge/search}">キャンセル</a>
+      </div>
+      <div th:if="!${isAddMode}">
+        <a role="button" class="contrast" id="delete" th:href="@{/charge/delete/{id}(id=*{id})}">削除</a>
+      </div>
+    </div>
+  </form>
+  <script th:inline="javascript">
+    /**
+        削除ボタンがクリックされた時の制御
+    */
+    // HTMLが読み込まれたら実行する関数を登録
+    document.addEventListener("DOMContentLoaded", (e) => {
+      // idがdeleteのHTML要素(削除ボタン)を取得
+      const deleteBtn = document.getElementById("delete");
+      // 取得した要素がクリックされた時に実行される関数を登録。
+      deleteBtn.addEventListener("click", (e) => {
+        // 確認画面を表示
+        const result = confirm("id:[[${charge.id}]]を削除してもよろしいですか？");
+        if (!result) {
+          // もし、キャンセルが押されたら、クリックされた要素動作を取りやめる
+          e.preventDefault();
+        }
+        return result;
+      });
+    });
+  </script>
+</div>
+
+</html>

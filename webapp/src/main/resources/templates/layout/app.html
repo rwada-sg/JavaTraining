@@ -20,6 +20,9 @@
       <li>
         <a th:href="@{/member/search}" th:aria-current="${usefunction == 'member'} ? 'page'">加入者情報管理</a>
       </li>
+      <li>
+        <a th:href="@{/charge/search}" th:aria-current="${usefunction == 'charge'} ? 'page'">料金名情報管理</a>
+      </li>
     </ul>
     <!--/* 右寄せ */-->
     <div sec:authorize="isAuthenticated()">

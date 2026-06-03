@@ -34,7 +34,7 @@ public class MemberRepository implements IMemberRepository {
     }
 
     /**
-     * メールアドレスの一部にマッチするの加入者情報リストを取得する。
+     * メールアドレスの一部にマッチする加入者情報リストを取得する。
      *
      * @return Optional型の Memberオブジェクト
      */

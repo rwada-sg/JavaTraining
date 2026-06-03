@@ -87,7 +87,7 @@ public class MemberService implements IMemberService {
     }
 
     /**
-     * 加入者を先所する
+     * 加入者を削除する
      * 
      * @param memberId 加入者情報のID
      */

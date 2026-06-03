@@ -4,6 +4,8 @@
 
 CREATE SEQUENCE IF NOT EXISTS t_member_seq AS BIGINT START WITH 1 INCREMENT BY 1 NO CYCLE; 
 
+CREATE SEQUENCE IF NOT EXISTS t_charge_seq AS BIGINT START WITH 1 INCREMENT BY 1 NO CYCLE;
+
 CREATE TABLE IF NOT EXISTS t_user (
     username        VARCHAR(255)  NOT NULL,
     password        VARCHAR(255)  NOT NULL,
@@ -22,4 +24,15 @@ CREATE TABLE IF NOT EXISTS t_member (
     created_at	    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     modified_at	    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (member_id)
+);
+
+CREATE TABLE IF NOT EXISTS t_charge (
+    charge_id       BIGINT NOT NULL,
+    name            VARCHAR(127) NOT NULL,
+    amount          NUMERIC(9,0) NOT NULL,
+    start_date      DATE NOT NULL,
+    end_date        DATE,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    modified_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (charge_id)
 );
