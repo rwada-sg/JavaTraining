@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.s_giken.training.webapp.exception.AttributeErrorException;
+import com.s_giken.training.webapp.exception.InvalidIdException;
 import com.s_giken.training.webapp.exception.NotFoundException;
 import com.s_giken.training.webapp.model.entity.Charge;
 import com.s_giken.training.webapp.model.entity.ChargeSearchCondition;
@@ -47,13 +49,15 @@ public class ChargeController {
     }
 
     @GetMapping("/edit/{id}")
-    public String editCharge(@PathVariable Long id, Model model) {
+    public String editCharge(@PathVariable Long id, @RequestParam(required = false) Boolean addMode, Model model) {
 
         var charge = chargeService.findById(id); // 戻り値：Optional<Charge>
         if (!charge.isPresent()) {
             throw new NotFoundException(String.format("指定したid(%d)の料金情報が存在しません。", id));
         }
-        model.addAttribute("isAddMode", false);
+        if (Boolean.TRUE.equals(addMode)) {
+            charge.get().setAddMode(true);
+        }
         model.addAttribute("charge", charge.get());
 
         return "charge_edit";
@@ -63,7 +67,7 @@ public class ChargeController {
     public String formAddCharge(Model model) {
 
         Charge charge = new Charge();
-        model.addAttribute("isAddMode", true);
+        charge.setAddMode(true);
         model.addAttribute("charge", charge);
 
         return "charge_edit";
@@ -71,7 +75,10 @@ public class ChargeController {
 
     @PostMapping("/add")
     @Transactional
-    public String addCharge(@Validated Charge charge, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String addCharge(@Validated Charge charge,
+            BindingResult result,
+            RedirectAttributes redirectAttributes,
+            Model model) {
 
         if (result.hasErrors()) {
             return "charge_edit";
@@ -80,9 +87,13 @@ public class ChargeController {
         try {
             chargeService.add(charge);
         } catch (AttributeErrorException e) {
-            result.rejectValue("startDate", e.getMessage());
+            result.rejectValue("endDate", e.getMessage());
+            return "charge_edit";
+        } catch (InvalidIdException e) {
+            result.reject(e.getMessage());
             return "charge_edit";
         }
+        redirectAttributes.addAttribute("addMode", charge.isAddMode());
         redirectAttributes.addFlashAttribute("message", "保存しました。");
 
         return "redirect:/charge/edit/" + charge.getId();
@@ -99,7 +110,10 @@ public class ChargeController {
         try {
             chargeService.update(charge);
         } catch (AttributeErrorException e) {
-            result.rejectValue("startDate", e.getMessage());
+            result.rejectValue("endDate", e.getMessage());
+            return "charge_edit";
+        } catch (InvalidIdException e) {
+            result.reject(e.getMessage());
             return "charge_edit";
         }
         redirectAttributes.addFlashAttribute("message", "保存しました。");

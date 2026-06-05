@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.s_giken.training.webapp.exception.AttributeErrorException;
+import com.s_giken.training.webapp.exception.InvalidIdException;
 import com.s_giken.training.webapp.model.entity.Charge;
 import com.s_giken.training.webapp.model.entity.ChargeSearchCondition;
 import com.s_giken.training.webapp.repository.IChargeRepository;
@@ -60,7 +61,7 @@ public class ChargeService implements IChargeService {
 
         validateDateRange(charge);
         if (charge.getId() != null) {
-            throw new AttributeErrorException("加入者IDが指定されていると登録できません。");
+            throw new InvalidIdException("error.id.unexpected");
         }
 
         chargeRepository.add(charge);
@@ -76,7 +77,7 @@ public class ChargeService implements IChargeService {
 
         validateDateRange(charge);
         if (charge.getId() == null) {
-            throw new AttributeErrorException("加入者IDが指定されていません。");
+            throw new InvalidIdException("error.id.required");
         }
 
         chargeRepository.update(charge);

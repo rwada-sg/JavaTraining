@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html th:replace="~{layout/app :: layout(${isAddMode}?'料金情報登録':'料金情報編集', ~{::content}, 'charge')}"
+<html th:replace="~{layout/app :: layout(${charge.addMode}?'料金情報登録':'料金情報編集', ~{::content}, 'charge')}"
   xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <div th:fragment="content">
@@ -7,7 +7,8 @@
   <div th:if="!${#strings.isEmpty(message)}" class="alert alert-success">
     <span th:text="${message}"></span>
   </div>
-  <form th:action="${isAddMode}?@{/charge/add}:@{/charge/update}" th:object="${charge}" method="POST">
+  <form th:action="*{addMode}?@{/charge/add}:@{/charge/update}" th:object="${charge}" method="POST">
+    <input type="hidden" th:field="*{addMode}">
     <input type="hidden" th:field="*{id}">
     <label for="chargeName">料金名
       <input type="text" th:field="*{chargeName}" maxlength="127">
@@ -30,9 +31,15 @@
         <button type="submit">保存</button>
         <a role="button" class="secondary" th:href="@{/charge/search}">キャンセル</a>
       </div>
-      <div th:if="!${isAddMode}">
+      <div th:if="!*{addMode}">
         <a role="button" class="contrast" id="delete" th:href="@{/charge/delete/{id}(id=*{id})}">削除</a>
       </div>
+    </div>
+
+    <br>
+    <br>
+    <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
+      <span th:each="err : ${#fields.globalErrors()}" th:text="${err}"></span>
     </div>
   </form>
   <script th:inline="javascript">

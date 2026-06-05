@@ -10,6 +10,5 @@ import lombok.AllArgsConstructor;
 public class ChargeSearchCondition {
 
     private String chargeName;
-    private String monthlyCharge;
 
 }

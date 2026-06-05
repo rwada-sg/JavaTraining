@@ -46,4 +46,6 @@ public class Charge {
     @Nullable
     private Timestamp modifiedAt;
 
+    private boolean addMode;
+
 }
