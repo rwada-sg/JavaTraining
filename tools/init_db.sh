@@ -50,6 +50,9 @@ INSERT INTO T_USER VALUES ('user', '$argon2id$v=19$m=14,t=2,p=1$eVczdXhrMWlDZERW
 INSERT INTO T_MEMBER VALUES (nextval('t_member_seq'), 'yamada@example.com', '山田　太郎', '東京都千代田区1-1-1', '2026-01-01', NULL, 1, NOW(), NOW());
 
 INSERT INTO t_charge VALUES (nextval('t_charge_seq'), '毎日銀行', 30000, '2026-01-01', NULL, NOW(), NOW());
+INSERT INTO t_charge VALUES (nextval('t_charge_seq'), '水道料金', 10000, '2022-04-01', NULL, NOW(), NOW());
+INSERT INTO t_charge VALUES (nextval('t_charge_seq'), '電気料金', 5000,  '2022-04-01', NULL, NOW(), NOW());
+INSERT INTO t_charge VALUES (nextval('t_charge_seq'), 'ガス料金', 3000,  '2023-07-07', '2025-10-08', NOW(), NOW());
 
 COMMIT;
 __EOS__
