@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.dao.DataAccessException;
 
 import com.s_giken.training.batch.service.IBillingService;
 
@@ -47,11 +48,6 @@ public class BatchApplication implements CommandLineRunner {
 
 		logger.info("-".repeat(40));
 
-		// TODO: ここにバッチ処理のコードを記述する
-		// - データベースからデータを取得する
-		// - データを加工する
-		// - 加工したデータをデータベースに登録する
-
 		if (args.length != 1) {
 			logger.error("コマンドライン引数の数が不正です。1つのみ指定してください。現在の数は{}です。", args.length);
 		} else {
@@ -63,10 +59,12 @@ public class BatchApplication implements CommandLineRunner {
 				billingService.processBilling(targetMonth, lastDay);
 			} catch (DateTimeParseException e) {
 				logger.error("請求対象年月の書式が不正です。正しくは{}です。", "yyyyMM");
+			} catch (DataAccessException e) {
+				throw e;
+			} finally {
+				logger.info("-".repeat(40));
 			}
 		}
-
-		logger.info("-".repeat(40));
 	}
 
 }

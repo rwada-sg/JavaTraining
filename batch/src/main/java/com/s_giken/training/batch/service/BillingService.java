@@ -28,7 +28,7 @@ public class BillingService implements IBillingService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月");
         String formattedTargetMonth = targetMonth.format(formatter);
 
-        logger.info("{}分の請求情報を確認しています。\n", formattedTargetMonth);
+        logger.info("{}分の請求情報を確認しています。", formattedTargetMonth);
 
         Integer commitStatus = billingRepository.checkBillingStatus(targetMonth);
         if (commitStatus != 0) {
@@ -36,21 +36,16 @@ public class BillingService implements IBillingService {
         } else {
             String phase = null;
             try {
-                logger.info("{}分の請求明細データを削除しています。", formattedTargetMonth);
                 phase = "請求明細データ情報の削除";
                 int cntDetailData = billingRepository.deleteBillingDetailData(targetMonth);
-                logger.info("{}件削除しました。", cntDetailData);
 
-                logger.info("{}分の請求データ情報を削除しています。", formattedTargetMonth);
                 phase = "請求データ情報の削除";
                 int cntData = billingRepository.deleteBillingData(targetMonth);
-                logger.info("{}件削除しました。", cntData);
 
-                logger.info("{}分の請求ステータス情報を削除しています。", formattedTargetMonth);
                 phase = "請求ステータス情報の削除";
                 int cntStatus = billingRepository.deleteBillingStatus(targetMonth);
-                logger.info("{}件削除しました。", cntStatus);
-                logger.info("データベースから{}分の未確定請求情報を削除しました。\n", formattedTargetMonth);
+
+                logger.info("データベースから{}分の未確定請求情報を削除しました。", formattedTargetMonth);
 
                 logger.info("{}分の請求ステータス情報を追加しています。", formattedTargetMonth);
                 phase = "請求ステータス情報の追加";
@@ -68,6 +63,8 @@ public class BillingService implements IBillingService {
                 logger.info("{}件追加しました。", cntDetailData);
             } catch (DataAccessException e) {
                 logger.error("{}中にエラーが発生しました。メッセージ：{}", phase, e.getMessage());
+
+                throw e;
             }
 
         }
