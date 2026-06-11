@@ -60,6 +60,7 @@ public class BatchApplication implements CommandLineRunner {
 			} catch (DateTimeParseException e) {
 				logger.error("請求対象年月の書式が不正です。正しくは{}です。", "yyyyMM");
 			} catch (DataAccessException e) {
+				// e.setStackTrace(new StackTraceElement[0]);
 				throw e;
 			} finally {
 				logger.info("-".repeat(40));
