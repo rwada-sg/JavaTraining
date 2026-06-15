@@ -47,7 +47,7 @@ public class BillingRepository implements IBillingRepository {
     @Override
     public int deleteBillingStatus(LocalDate targetMonth) {
 
-        return jdbcTemplate.update("DELETE FROM t_billing_status WHERE billing_ym = ", targetMonth);
+        return jdbcTemplate.update("DELETE FROM t_billing_status WHERE billing_ym = ?", targetMonth);
     }
 
     @Override

@@ -1,3 +1,13 @@
+DELETE FROM t_user;
+DELETE FROM t_member;
+DELETE FROM t_charge;
+DELETE FROM t_billing_detail_data;
+DELETE FROM t_billing_data;
+DELETE FROM t_billing_status;
+
+SELECT setval('t_member_seq', 1, false);
+SELECT setval('t_charge_seq', 1, false);
+
 INSERT INTO t_user (username, password, enabled)
 VALUES ('user', '$argon2id$v=19$m=14,t=2,p=1$eVczdXhrMWlDZERWUnZWdA$HjSDtkidFBp49L0k8ZlvtTVcKkC//uOkIjDRiYbGIWg', true)
 ON CONFLICT (username)

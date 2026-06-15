@@ -1,0 +1,188 @@
+vscode ➜ /workspaces/JavaTraining (main) $ psql -h database -U trainingapp -W trainingapp
+Password: 
+psql (18.4 (Debian 18.4-1.pgdg13+1))
+Type "help" for help.
+
+
+*** t_member と t_charge の初期データ（正常系と異常系で共通）***
+
+trainingapp=> select * from t_member;
+ member_id |        mail        |    name    |       address       | start_date |  end_date  | payment_method |         created_at         |        modified_at         
+-----------+--------------------+------------+---------------------+------------+------------+----------------+----------------------------+----------------------------
+         1 | yamada@example.com | 山田　太郎 | 東京都千代田区1-1-1 | 2022-04-01 | 2023-09-22 |              1 | 2026-06-12 04:33:35.362017 | 2026-06-12 04:33:35.362017
+         2 | yamada@example.com | 山田　花子 | 東京都世田谷区2-2-2 | 2023-09-01 |            |              2 | 2026-06-12 04:33:35.362017 | 2026-06-12 04:33:35.362017
+         3 | sato@example.com   | 佐藤　一郎 | 東京都品川区3-3-3   | 2023-09-30 | 2023-10-01 |              1 | 2026-06-12 04:33:35.362017 | 2026-06-12 04:33:35.362017
+         4 | suzuki@example.com | 鈴木　次郎 | 東京都渋谷区4-4-4   | 2023-10-01 |            |              2 | 2026-06-12 04:33:35.362017 | 2026-06-12 04:33:35.362017
+(4 rows)
+
+trainingapp=> select * from t_charge;
+ charge_id |             name             | amount | start_date |  end_date  |         created_at         |        modified_at         
+-----------+------------------------------+--------+------------+------------+----------------------------+----------------------------
+         1 | 基本料金                     |  10000 | 2022-01-01 |            | 2026-06-12 04:33:35.362017 | 2026-06-12 04:33:35.362017
+         2 | 期間限定広告非表示オプション |    300 | 2023-09-01 | 2023-09-14 | 2026-06-12 04:33:35.362017 | 2026-06-12 04:33:35.362017
+         3 | 期間限定見放題パック         |   1500 | 2023-09-30 | 2024-08-31 | 2026-06-12 04:33:35.362017 | 2026-06-12 04:33:35.362017
+         4 | プレミアム会員パス           |   4000 | 2023-10-01 |            | 2026-06-12 04:33:35.362017 | 2026-06-12 04:33:35.362017
+(4 rows)
+
+
+## 確認内容（正常系）
+
+## コンソール出力画面 -----
+
+「- [×] 各テーブルへの操作（検索、削除、追加）の概要と件数が以下のように表示される。」に対応
+
+
+*** t_billing_status と t_billing_data と t_billing_detail_data の初期データ ***
+
+trainingapp=> select * from t_billing_status;
+ billing_ym | is_commit 
+------------+-----------
+(0 rows)
+
+trainingapp=> select * from t_billing_data;
+ billing_ym | member_id | mail | name | address | start_date | end_date | payment_method | amount | tax_ratio | total | created_at | modified_at 
+------------+-----------+------+------+---------+------------+----------+----------------+--------+-----------+-------+------------+-------------
+(0 rows)
+
+trainingapp=> select * from t_billing_detail_data;
+ billing_ym | member_id | charge_id | name | amount | start_date | end_date | created_at | modified_at 
+------------+-----------+-----------+------+--------+------------+----------+------------+-------------
+(0 rows)
+
+
+*** バッチ処理がコミットした場合 ***
+
+    　t_billing_status：1行目に  2023-09-01 | f を登録
+
+    　t_billing_data：1行目に　2023-09-01 |         1 | yamada@example.com | 山田　太郎 | 東京都千代田区1-1-1 | 2022-04-01 | 2023-09-22 |              1 |  11800 |      0.10 | 12980 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532　を登録
+                    ：2行目に　2023-09-01 |         2 | yamada@example.com | 山田　花子 | 東京都世田谷区2-2-2 | 2023-09-01 |            |              2 |  11800 |      0.10 | 12980 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532　を登録
+                    ：3行目に　2023-09-01 |         3 | sato@example.com   | 佐藤　一郎 | 東京都品川区3-3-3   | 2023-09-30 | 2023-10-01 |              1 |  11800 |      0.10 | 12980 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532　を登録
+
+    　t_billing_detail_data：1行目に　2023-09-01 |         1 |         1 | 基本料金                     |  10000 | 2022-01-01 |            | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532　を登録
+    　                     ：2行目に　2023-09-01 |         1 |         2 | 期間限定広告非表示オプション |    300 | 2023-09-01 | 2023-09-14 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532　　を登録
+                        　 ：3行目に　2023-09-01 |         1 |         3 | 期間限定見放題パック         |   1500 | 2023-09-30 | 2024-08-31 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532　 を登録
+                        　 ：4行目に　2023-09-01 |         2 |         1 | 基本料金                     |  10000 | 2022-01-01 |            | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532　を登録
+                        　 ：5行目に　2023-09-01 |         2 |         2 | 期間限定広告非表示オプション |    300 | 2023-09-01 | 2023-09-14 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532　　を登録
+                        　 ：6行目に　2023-09-01 |         2 |         3 | 期間限定見放題パック         |   1500 | 2023-09-30 | 2024-08-31 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532　 を登録
+                        　 ：7行目に　2023-09-01 |         3 |         1 | 基本料金                     |  10000 | 2022-01-01 |            | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532　を登録
+                        　 ：8行目に　2023-09-01 |         3 |         2 | 期間限定広告非表示オプション |    300 | 2023-09-01 | 2023-09-14 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532　　を登録
+                        　 ：9行目に　2023-09-01 |         3 |         3 | 期間限定見放題パック         |   1500 | 2023-09-30 | 2024-08-31 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532　 を登録
+
+
+trainingapp=> select * from t_billing_status;
+ billing_ym | is_commit 
+------------+-----------
+ 2023-09-01 | f
+(1 row)
+
+trainingapp=> select * from t_billing_data;
+ billing_ym | member_id |        mail        |    name    |       address       | start_date |  end_date  | payment_method | amount | tax_ratio | total |         created_at         |        modified_at         
+------------+-----------+--------------------+------------+---------------------+------------+------------+----------------+--------+-----------+-------+----------------------------+----------------------------
+ 2023-09-01 |         1 | yamada@example.com | 山田　太郎 | 東京都千代田区1-1-1 | 2022-04-01 | 2023-09-22 |              1 |  11800 |      0.10 | 12980 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532
+ 2023-09-01 |         2 | yamada@example.com | 山田　花子 | 東京都世田谷区2-2-2 | 2023-09-01 |            |              2 |  11800 |      0.10 | 12980 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532
+ 2023-09-01 |         3 | sato@example.com   | 佐藤　一郎 | 東京都品川区3-3-3   | 2023-09-30 | 2023-10-01 |              1 |  11800 |      0.10 | 12980 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532
+(3 rows)
+
+trainingapp=> select * from t_billing_detail_data;
+ billing_ym | member_id | charge_id |             name             | amount | start_date |  end_date  |         created_at         |        modified_at         
+------------+-----------+-----------+------------------------------+--------+------------+------------+----------------------------+----------------------------
+ 2023-09-01 |         1 |         1 | 基本料金                     |  10000 | 2022-01-01 |            | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532
+ 2023-09-01 |         1 |         2 | 期間限定広告非表示オプション |    300 | 2023-09-01 | 2023-09-14 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532
+ 2023-09-01 |         1 |         3 | 期間限定見放題パック         |   1500 | 2023-09-30 | 2024-08-31 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532
+ 2023-09-01 |         2 |         1 | 基本料金                     |  10000 | 2022-01-01 |            | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532
+ 2023-09-01 |         2 |         2 | 期間限定広告非表示オプション |    300 | 2023-09-01 | 2023-09-14 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532
+ 2023-09-01 |         2 |         3 | 期間限定見放題パック         |   1500 | 2023-09-30 | 2024-08-31 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532
+ 2023-09-01 |         3 |         1 | 基本料金                     |  10000 | 2022-01-01 |            | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532
+ 2023-09-01 |         3 |         2 | 期間限定広告非表示オプション |    300 | 2023-09-01 | 2023-09-14 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532
+ 2023-09-01 |         3 |         3 | 期間限定見放題パック         |   1500 | 2023-09-30 | 2024-08-31 | 2026-06-12 04:55:34.237532 | 2026-06-12 04:55:34.237532
+(9 rows)
+
+
+
+
+## 確認内容（異常系）
+
+## コンソール出力画面
+
+「- [×] 各テーブルへの操作（検索、削除、追加）でエラーが起きた場合、以下のように表示される。」に対応
+
+
+*** t_billing_detail_data のテーブル定義を以下のように変更し、親テーブルとして t_insert_preventer（javaプログラム内では未使用）を以下のように定義する ***
+
+-- ダミーテーブル（INSERT文エラー発生用テーブル）
+CREATE TABLE IF NOT EXISTS t_insert_preventer (
+    billing_ym      DATE,
+    member_id       BIGINT NOT NULL,
+    is_commit       BOOLEAN NOT NULL DEFAULT FALSE,
+    PRIMARY KEY (billing_ym, member_id)
+);
+
+-- 請求詳細データ
+CREATE TABLE IF NOT EXISTS t_billing_detail_data (
+    billing_ym      DATE NOT NULL,
+    member_id       BIGINT NOT NULL,
+    charge_id       BIGINT NOT NULL,
+    name            VARCHAR(127) NOT NULL,
+    amount          NUMERIC(9,0) NOT NULL,
+    start_date      DATE NOT NULL,
+    end_date        DATE,
+    created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (billing_ym, member_id, charge_id),
+    FOREIGN KEY (billing_ym, member_id) 
+        REFERENCES t_insert_preventer(billing_ym, member_id)            // REFERENCES t_billing_data(billing_ym, member_id) を REFERENCES t_insert_preventer(billing_ym, member_id) に変更
+);
+
+
+*** t_insert_preventer と t_billing_status と t_billing_data と t_billing_detail_data の初期データ ***
+
+trainingapp=> select * from t_insert_preventer;
+ billing_ym | member_id | is_commit 
+------------+-----------+-----------
+(0 rows)
+
+trainingapp=> select * from t_billing_status;
+ billing_ym | is_commit 
+------------+-----------
+(0 rows)
+
+trainingapp=> select * from t_billing_data;
+ billing_ym | member_id | mail | name | address | start_date | end_date | payment_method | amount | tax_ratio | total | created_at | modified_at 
+------------+-----------+------+------+---------+------------+----------+----------------+--------+-----------+-------+------------+-------------
+(0 rows)
+
+trainingapp=> select * from t_billing_detail_data;
+ billing_ym | member_id | charge_id | name | amount | start_date | end_date | created_at | modified_at 
+------------+-----------+-----------+------+--------+------------+----------+------------+-------------
+(0 rows)
+
+
+*** バッチ処理がロールバックした場合 ***
+
+*** ログ出力例：
+
+2026-06-12T06:47:44.508Z  INFO 37448 --- [           main] c.s.training.batch.BatchApplication      : ----------------------------------------
+2026-06-12T06:47:44.535Z  INFO 37448 --- [           main] c.s.t.batch.service.BillingService       : 2023年09月分の請求情報を確認しています。
+2026-06-12T06:47:44.602Z  INFO 37448 --- [           main] c.s.t.batch.service.BillingService       : データベースから2023年09月分の未確定請求情報を削除しました。
+2026-06-12T06:47:44.602Z  INFO 37448 --- [           main] c.s.t.batch.service.BillingService       : 2023年09月分の請求ステータス情報を追加しています。
+2026-06-12T06:47:44.603Z  INFO 37448 --- [           main] c.s.t.batch.service.BillingService       : 1件追加しました。                                             // t_billing_status に1レコード追加
+2026-06-12T06:47:44.603Z  INFO 37448 --- [           main] c.s.t.batch.service.BillingService       : 2023年09月分の請求データ情報を追加しています。
+2026-06-12T06:47:44.607Z  INFO 37448 --- [           main] c.s.t.batch.service.BillingService       : 3件追加しました。                                             // t_billing_data   に3レコード追加
+2026-06-12T06:47:44.607Z  INFO 37448 --- [           main] c.s.t.batch.service.BillingService       : 2023年09月分の請求明細データ情報を追加しています。
+2026-06-12T06:47:44.645Z ERROR 37448 --- [           main] c.s.training.batch.BatchApplication      : 請求明細データ情報の追加中にエラーが発生しました。               // t_billing_detail_data でエラー
+2026-06-12T06:47:44.646Z  INFO 37448 --- [           main] c.s.training.batch.BatchApplication      : ----------------------------------------
+
+
+*** t_billing_status と t_billing_data それぞれにレコードを追加したが、t_billing_detail_data でエラーとなり、ロールバックが実行される。
+    したがって、t_billing_status と t_billing_data は以下のようにトランザクション開始前の状態に戻る
+
+trainingapp=> select * from t_billing_status;
+ billing_ym | is_commit 
+------------+-----------
+(0 rows)
+
+trainingapp=> select * from t_billing_data;
+ billing_ym | member_id | mail | name | address | start_date | end_date | payment_method | amount | tax_ratio | total | created_at | modified_at 
+------------+-----------+------+------+---------+------------+----------+----------------+--------+-----------+-------+------------+-------------
+(0 rows)

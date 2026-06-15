@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.dao.DataAccessException;
 
+import com.s_giken.training.batch.exception.BillingException;
 import com.s_giken.training.batch.service.IBillingService;
 
 @SpringBootApplication
@@ -46,10 +46,13 @@ public class BatchApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws RuntimeException {
 
+		boolean hasError = false;
+
 		logger.info("-".repeat(40));
 
 		if (args.length != 1) {
 			logger.error("コマンドライン引数の数が不正です。1つのみ指定してください。現在の数は{}です。", args.length);
+			hasError = true;
 		} else {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
 			try {
@@ -59,12 +62,17 @@ public class BatchApplication implements CommandLineRunner {
 				billingService.processBilling(targetMonth, lastDay);
 			} catch (DateTimeParseException e) {
 				logger.error("請求対象年月の書式が不正です。正しくは{}です。", "yyyyMM");
-			} catch (DataAccessException e) {
-				// e.setStackTrace(new StackTraceElement[0]);
-				throw e;
-			} finally {
-				logger.info("-".repeat(40));
+				hasError = true;
+			} catch (BillingException e) {
+				logger.error(e.getMessage());
+				hasError = true;
 			}
+		}
+
+		logger.info("-".repeat(40));
+
+		if (hasError) {
+			System.exit(1);
 		}
 	}
 
