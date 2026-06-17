@@ -323,49 +323,70 @@ VALUES ('user', '$argon2id$v=19$m=14,t=2,p=1$eVczdXhrMWlDZERWUnZWdA$HjSDtkidFBp4
 ON CONFLICT (username)
 DO NOTHING;
 
-/*
+
 -- 加入者情報
 INSERT INTO t_member (member_id, mail, name, address, start_date, end_date, payment_method, created_at, modified_at)
-VALUES (nextval('t_member_seq'), 'yamada@example.com', '山田　太郎', '東京都千代田区1-1-1', '2022-04-01', '2023-09-22', 1, NOW(), NOW())
+VALUES (nextval('t_member_seq'), 'sato@example.com', '佐藤　一郎', '東京都千代田区1-1-1', '2000-04-01', NULL, 1, NOW(), NOW())
 ON CONFLICT (member_id)
 DO NOTHING;
 
 INSERT INTO t_member (member_id, mail, name, address, start_date, end_date, payment_method, created_at, modified_at)
-VALUES (nextval('t_member_seq'), 'yamada@example.com', '山田　花子', '東京都世田谷区2-2-2', '2023-09-01', NULL, 2, NOW(), NOW())
+VALUES (nextval('t_member_seq'), 'suzuki@example.com', '鈴木　二郎', '東京都中央区2-2-2', '2000-04-01', '2023-08-31', 1, NOW(), NOW())
 ON CONFLICT (member_id)
 DO NOTHING;
 
 INSERT INTO t_member (member_id, mail, name, address, start_date, end_date, payment_method, created_at, modified_at)
-VALUES (nextval('t_member_seq'), 'sato@example.com', '佐藤　一郎', '東京都品川区3-3-3', '2023-09-30', '2023-10-01', 1, NOW(), NOW())
+VALUES (nextval('t_member_seq'), 'takahashi@example.com', '高橋　三郎', '東京都港区3-3-3', '2000-04-01', '2023-09-01', 1, NOW(), NOW())
 ON CONFLICT (member_id)
 DO NOTHING;
 
 INSERT INTO t_member (member_id, mail, name, address, start_date, end_date, payment_method, created_at, modified_at)
-VALUES (nextval('t_member_seq'), 'suzuki@example.com', '鈴木　次郎', '東京都渋谷区4-4-4', '2023-10-01', NULL, 2, NOW(), NOW())
+VALUES (nextval('t_member_seq'), 'tanaka@example.com', '田中　四郎', '東京都新宿区4-4-4', '2023-09-15', '2023-09-20', 2, NOW(), NOW())
 ON CONFLICT (member_id)
 DO NOTHING;
+
+INSERT INTO t_member (member_id, mail, name, address, start_date, end_date, payment_method, created_at, modified_at)
+VALUES (nextval('t_member_seq'), 'ito@example.com', '伊藤　五郎', '東京都渋谷区5-5-5', '2023-09-30', NULL, 2, NOW(), NOW())
+ON CONFLICT (member_id)
+DO NOTHING;
+
+INSERT INTO t_member (member_id, mail, name, address, start_date, end_date, payment_method, created_at, modified_at)
+VALUES (nextval('t_member_seq'), 'watanabe@example.com', '渡辺　六郎', '東京都台東区6-6-6', '2023-10-01', NULL, 2, NOW(), NOW())
+ON CONFLICT (member_id)
+DO NOTHING;
+
 
 -- 料金情報
 INSERT INTO t_charge (charge_id, name, amount, start_date, end_date, created_at, modified_at)
-VALUES (nextval('t_charge_seq'), '基本料金', 10000, '2022-01-01', NULL, NOW(), NOW())
+VALUES (nextval('t_charge_seq'), 'テスト料金1', 1000, '2000-04-01', NULL, NOW(), NOW())
 ON CONFLICT (charge_id)
 DO NOTHING;
 
 INSERT INTO t_charge (charge_id, name, amount, start_date, end_date, created_at, modified_at)
-VALUES (nextval('t_charge_seq'), '期間限定広告非表示オプション', 300, '2023-09-01', '2023-09-14', NOW(), NOW())
+VALUES (nextval('t_charge_seq'), 'テスト料金2', 2000, '2000-04-01', '2023-08-31', NOW(), NOW())
 ON CONFLICT (charge_id)
 DO NOTHING;
 
 INSERT INTO t_charge (charge_id, name, amount, start_date, end_date, created_at, modified_at)
-VALUES (nextval('t_charge_seq'), '期間限定見放題パック', 1500, '2023-09-30', '2024-08-31', NOW(), NOW())
+VALUES (nextval('t_charge_seq'), 'テスト料金3', 3000, '2000-04-01', '2023-09-01', NOW(), NOW())
 ON CONFLICT (charge_id)
 DO NOTHING;
 
 INSERT INTO t_charge (charge_id, name, amount, start_date, end_date, created_at, modified_at)
-VALUES (nextval('t_charge_seq'), 'プレミアム会員パス', 4000, '2023-10-01', NULL, NOW(), NOW())
+VALUES (nextval('t_charge_seq'), 'テスト料金4', 4444, '2023-09-15', '2023-09-20', NOW(), NOW())
 ON CONFLICT (charge_id)
 DO NOTHING;
-*/
+
+INSERT INTO t_charge (charge_id, name, amount, start_date, end_date, created_at, modified_at)
+VALUES (nextval('t_charge_seq'), 'テスト料金5', 5555, '2023-09-30', NULL, NOW(), NOW())
+ON CONFLICT (charge_id)
+DO NOTHING;
+
+INSERT INTO t_charge (charge_id, name, amount, start_date, end_date, created_at, modified_at)
+VALUES (nextval('t_charge_seq'), 'テスト料金6', 6666, '2023-10-01', NULL, NOW(), NOW())
+ON CONFLICT (charge_id)
+DO NOTHING;
+
 
 COMMIT;
 __EOS__
