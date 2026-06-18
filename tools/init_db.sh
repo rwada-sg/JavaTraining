@@ -323,7 +323,7 @@ VALUES ('user', '$argon2id$v=19$m=14,t=2,p=1$eVczdXhrMWlDZERWUnZWdA$HjSDtkidFBp4
 ON CONFLICT (username)
 DO NOTHING;
 
-
+/*
 -- 加入者情報
 INSERT INTO t_member (member_id, mail, name, address, start_date, end_date, payment_method, created_at, modified_at)
 VALUES (nextval('t_member_seq'), 'sato@example.com', '佐藤　一郎', '東京都千代田区1-1-1', '2000-04-01', NULL, 1, NOW(), NOW())
@@ -386,7 +386,7 @@ INSERT INTO t_charge (charge_id, name, amount, start_date, end_date, created_at,
 VALUES (nextval('t_charge_seq'), 'テスト料金6', 6666, '2023-10-01', NULL, NOW(), NOW())
 ON CONFLICT (charge_id)
 DO NOTHING;
-
+*/
 
 COMMIT;
 __EOS__
